@@ -18,6 +18,7 @@ class ContactList
 
     case user_input
     when "new"
+      Contact.create
     when "list"
       display(Contact.all)
     when "show"
@@ -26,8 +27,14 @@ class ContactList
     end
   end
 
-  def display
-
+  def display(contacts)
+    contacts.each_with_index do |contact, index|
+      puts "#{index + 1}: #{contact.name} (#{contact.email})"
+    end
+    puts "---------"
+    puts "#{contacts.count} records total"
   end
 
 end
+
+ContactList.new.main_menu

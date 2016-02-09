@@ -26,6 +26,7 @@ class Contact
       CSV.foreach('contacts.csv') do |row|
         contacts << Contact.new(row[0], row[1])
       end
+      contacts
     end
 
     # Creates a new contact, adding it to the csv file, returning the new contact.
