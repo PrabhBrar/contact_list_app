@@ -86,7 +86,7 @@ class Contact
       # TODO: Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
       searched_contacts = []
       CSV.foreach(@csvfile, headers: true) do |row|
-        if row.join(" ").downcase.include?(term.downcase)
+        if [row["full_name"], row["email"], row["phone_numbers"]].join(" ").downcase.include?(term.downcase)
           contact = Contact.new($INPUT_LINE_NUMBER - 1, row["full_name"], row["email"], row["phone_numbers"])
           searched_contacts.push(contact) 
         end
