@@ -98,7 +98,7 @@ class ContactList
       print "Do you want to update the phone numbers?(y/n) "
       choice = STDIN.gets.chomp
       phone_numbers = get_phone_numbers if choice == 'y'
-      contact.update(contact, name, email, phone_numbers)
+      contact.update(name, email, phone_numbers)
       puts "Contact updated."
       display_one_contact(contact)
     else
