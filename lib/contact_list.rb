@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require_relative 'contact'
+require_relative 'connection'
 require 'pry'
 
 # Interfaces between a user and their contact list. Reads from and writes to standard I/O.
@@ -43,7 +44,8 @@ class ContactList
   end
 
   def search
-    display_multiple_contacts(Contact.search(ARGV[1]))
+    term = '%'+ARGV[1]+'%'
+    display_multiple_contacts(Contact.where("name LIKE ? OR email LIKE ?", term, term))
   end
 
   def update
@@ -65,9 +67,9 @@ class ContactList
   def list
     limit = 3
     offset = 0
-    total_contacts = Contact.record_count
+    total_contacts = Contact.count
     while offset < total_contacts
-      display_multiple_contacts(Contact.all(limit, offset))
+      display_multiple_contacts(Contact.all.limit(limit).offset(offset))
       offset += limit
       wait_for_user_response(offset, total_contacts)
     end
@@ -77,8 +79,8 @@ class ContactList
   # @return [nil].
   def get_new_contact
     puts "Enter details for the new contact: "
-    name, email, phone_numbers = get_name, get_email, get_phone_numbers
-    contact = Contact.create(name, email, phone_numbers)
+    name, email = get_name, get_email
+    contact = Contact.create(name: name, email: email)
     if contact
       puts "Contact was created successfully, Id of the new contact: #{contact.id}."
     else
@@ -95,10 +97,10 @@ class ContactList
       print "Do you want to update the email?(y/n) "
       choice = STDIN.gets.chomp
       email = get_email if choice == 'y'
-      print "Do you want to update the phone numbers?(y/n) "
-      choice = STDIN.gets.chomp
-      phone_numbers = get_phone_numbers if choice == 'y'
-      contact.update(contact, name, email, phone_numbers)
+      #print "Do you want to update the phone numbers?(y/n) "
+      #choice = STDIN.gets.chomp
+      #phone_numbers = get_phone_numbers if choice == 'y'
+      contact.update(name: name, email: email)
       puts "Contact updated."
       display_one_contact(contact)
     else
@@ -139,7 +141,6 @@ class ContactList
     if contact
       puts "Name: #{contact.name}"
       puts "E-mail: #{contact.email}"
-      puts "Phone Number: #{contact.phone_number}"
     else
       puts "Not found!"
     end
@@ -150,7 +151,7 @@ class ContactList
   # @return [Array<Contact>] .
   def display_multiple_contacts(contacts)
     contacts.each do |contact|
-      puts "#{contact.id}: #{contact.name} (#{contact.email}) (#{contact.phone_number})"
+      puts "#{contact.id}: #{contact.name} (#{contact.email})"
     end
   end
 
