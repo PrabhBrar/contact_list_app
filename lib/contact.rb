@@ -3,4 +3,8 @@ require 'active_record'
 # The ContactList class will work with Contact objects instead of interacting with the database directly
 class Contact < ActiveRecord::Base
 
+  validates :email, uniqueness: true,
+            presence: true
+  validates :name, presence: true
+
 end

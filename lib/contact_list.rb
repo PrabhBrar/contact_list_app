@@ -81,10 +81,10 @@ class ContactList
     puts "Enter details for the new contact: "
     name, email = get_name, get_email
     contact = Contact.create(name: name, email: email)
-    if contact
-      puts "Contact was created successfully, Id of the new contact: #{contact.id}."
-    else
+    if contact.errors
       puts "Contact already exists! New Contact can not be created."
+    else
+      puts "Contact was created successfully, Id of the new contact: #{contact.id}."
     end
   end
 
